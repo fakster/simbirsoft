@@ -1,6 +1,10 @@
 from selenium.webdriver.common.by import By
 
 
+class GoogleSearchLocators:
+    SEARCH_STRING = (By.CSS_SELECTOR,'input.gLFyf')
+    BUTTON_SEARCH = (By.CSS_SELECTOR,'input.gNO89b')
+
 class CalculatorPageLocators:
     ONE = (By.CSS_SELECTOR, '[jsname="N10B9"]')
     TWO = (By.CSS_SELECTOR, '[jsname="lVjWed"]')

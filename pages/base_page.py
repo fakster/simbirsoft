@@ -1,5 +1,6 @@
-from selenium.webdriver.common.by import By
-from .locators import CalculatorPageLocators
+from .locators import CalculatorPageLocators,GoogleSearchLocators
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class BasePage:
@@ -11,20 +12,24 @@ class BasePage:
     def open(self):
         self.browser.get(self.url)
 
+    def find_element(self,locator,timeout=10):
+        return WebDriverWait(self.browser,timeout).until(EC.presence_of_element_located(locator),
+                                                         message="Can't find locator{}".format(locator))
+
     def go_to_calculator_page(self):
-        input = self.browser.find_element(By.CSS_SELECTOR, 'input.gLFyf')
-        input.send_keys("Калькулятор")
-        button = self.browser.find_element(By.CSS_SELECTOR, 'input.gNO89b')
+        search_string = self.find_element(GoogleSearchLocators.SEARCH_STRING)
+        search_string.send_keys("Калькулятор")
+        button = self.find_element(GoogleSearchLocators.BUTTON_SEARCH)
         button.click()
 
     def write_digits_to_calculator(self):
-        one = self.browser.find_element(*CalculatorPageLocators.ONE)
-        multiply = self.browser.find_element(*CalculatorPageLocators.MULTIPLY)
-        two = self.browser.find_element(*CalculatorPageLocators.TWO)
-        minus = self.browser.find_element(*CalculatorPageLocators.MINUS)
-        three = self.browser.find_element(*CalculatorPageLocators.THREE)
-        plus = self.browser.find_element(*CalculatorPageLocators.PLUS)
-        equal = self.browser.find_element(*CalculatorPageLocators.EQUAL)
+        one = self.find_element(CalculatorPageLocators.ONE)
+        multiply = self.find_element(CalculatorPageLocators.MULTIPLY)
+        two = self.find_element(CalculatorPageLocators.TWO)
+        minus = self.find_element(CalculatorPageLocators.MINUS)
+        three = self.find_element(CalculatorPageLocators.THREE)
+        plus = self.find_element(CalculatorPageLocators.PLUS)
+        equal = self.find_element(CalculatorPageLocators.EQUAL)
         one.click()
         multiply.click()
         two.click()
@@ -35,9 +40,9 @@ class BasePage:
         equal.click()
 
     def check_memory_string(self):
-        assert self.browser.find_element(*CalculatorPageLocators.MEMORY_STRING).text == '1 × 2 - 3 + 1 =', \
+        assert self.find_element(CalculatorPageLocators.MEMORY_STRING).text == '1 × 2 - 3 + 1 =', \
             'Formula from task is not in memory string'
 
     def check_result(self):
-        assert self.browser.find_element(*CalculatorPageLocators.RESULT).text == '0', \
+        assert self.find_element(CalculatorPageLocators.RESULT).text == '0', \
             'Expected result is not present'
